@@ -22,7 +22,7 @@ def save_ppm(frame):
             ppm_file.write("\n")  # new line after each row for readability
 
 start = 0
-end = 20
+end = 256
 for t in range(start, end):
     print("Frame:", t)
     save_ppm(t)

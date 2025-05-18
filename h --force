@@ -1,0 +1,32 @@
+[33mcommit 989227fa03e651df446dad75f219d5fe914ecdf7[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m
+Merge: 7603be2 f07764e
+Author: i_haiduk <ivannahaiduk@gmail.com>
+Date:   Sun May 18 22:08:40 2025 +0200
+
+    Merge branch 'main' of https://github.com/losttobefound/computer-graphics
+
+[33mcommit 7603be21cfa69742d428af5a3b8fe37373f2640f[m
+Merge: 11a121e ff2ef6d
+Author: i_haiduk <ivannahaiduk@gmail.com>
+Date:   Sun May 18 16:17:40 2025 +0200
+
+    Aufgabe 1: save ppm
+
+[33mcommit f07764eb146e311a72c5229b2fe505cb4db011d9[m
+Merge: 11a121e ff2ef6d
+Author: i_haiduk <ivannahaiduk@gmail.com>
+Date:   Sun May 18 16:17:40 2025 +0200
+
+    Merge branch 'main' of https://github.com/losttobefound/computer-graphics
+
+[33mcommit 11a121e08c679cf6c3357b4694c9a18eacaecbb9[m
+Author: i_haiduk <ivannahaiduk@gmail.com>
+Date:   Sun May 18 16:14:58 2025 +0200
+
+    Initial commit: added computer graphics homework
+
+[33mcommit ff2ef6dda441b2f6a6b965334509ba27dc5f6f00[m
+Author: i_haiduk <151016640+losttobefound@users.noreply.github.com>
+Date:   Sun May 18 16:08:55 2025 +0200
+
+    Initial commit
