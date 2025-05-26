@@ -9,3 +9,6 @@ venv.bak/
 
 # Editor directories and files 
 .vscode/*
+
+
+.ppm
