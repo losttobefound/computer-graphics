@@ -4,7 +4,8 @@ def save_ppm(width, height, buffer):
     # Create a path and file and open it for writing    
     output_path = os.path.join(os.path.dirname(__file__), "output")    
     output_file = os.path.join(output_path, "image.ppm")    
-    os.makedirs(output_path, exist_ok=True)    
+    os.makedirs(output_path, exist_ok=True) 
+
     with open(output_file, "w") as ppm_file:
         # Write the header    
         header = "P3\n{w} {h}\n255\n".format(w=width, h=height)    
