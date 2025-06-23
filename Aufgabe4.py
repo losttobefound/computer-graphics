@@ -1,5 +1,8 @@
 import math
 import os 
+from utils.objLoader import objLoader
+
+
 
 def save_ppm(width, height, buffer, time): 
     # Create a path and file and open it for writing    
@@ -81,24 +84,27 @@ def mult_vec3_m4(v, m):
         v4[0] * m[3] + v4[1] * m[7] + v4[2] * m[11] + v4[3] * m[15],  # w
     ]
 
-def rot_x(degrees):
-   # rad =  degrees * math.pi / 180
+def rot_y(degrees):
     rad = math.radians(degrees)
-
-    rotation_m = [
-        1, 0, 0, 
-        0, math. cos(rad), math.sin(rad),
-        0, -math.sin(rad), math.cos(rad)
+    return [
+        math.cos(rad), 0, -math.sin(rad),
+        0, 1, 0,
+        math.sin(rad), 0, math.cos(rad),
     ]
-    return rotation_m
 
 def m3_to_m4(m):
-    return[
-        m[0], m[1], m[2], 0,    
-        m[3], m[4], m[5], 0,    
-        m[6], m[7], m[8], 0,
-        0, 0, 0, 1,  
+    return [
+        m[0], m[1], m[2], 0,  # Row 1
+        m[3], m[4], m[5], 0,  # Row 2
+        m[6], m[7], m[8], 0,  # Row 3
+        0,    0,    0,    1   # Row 4
     ]
+
+def easeInOutCubic(x) : 
+    if x < 0.5:
+        return 4 * x * x * x
+    else:
+        return 1 - math.pow(-2 * x + 2, 3) / 2
 
 width = 200
 height = 200
@@ -120,23 +126,46 @@ cube = [
 translation = [1, 0, 0, 0,
                0, 1, 0, 0,
                0, 0, 1, 0,
-               0, 0, -1.3, 1]
+               0, 0, -0.3, 1]
 
 frames = 50
+
+# Load the object
+o = objLoader("./geo/humanHead.obj")
+
+# Loop through frames
 for t in range(0, frames):
     print ("Frame ", t)
     buffer = [10] * buffer_length * 3
 
-    angle = (360 / frames) * t
+    #angle = (360 / frames) * t
+    # normalize frame number    
+    normalized_t = t / frames 
+    # create eased value    
+    eased_value = easeInOutCubic(normalized_t) 
+    print ("t: ", t, "normalised_t: ", normalized_t, "eased: ", eased_value)
+    # create angle for rotation: 
+    # scale the normalized value back up, so 
+    # it fits into the animation range:    
+    angle = (360 / frames) * (eased_value * frames)
+    
     radians = math.radians(angle)
-    rotation = m3_to_m4(rot_x(angle))
+    rotation = m3_to_m4(rot_y(angle))
 
     combined = m4_x_m4(rotation, translation)
 
-    for v in cube: 
+    for index, val in enumerate(o.vertices[::3]):
+        start_index = index * 3
+        v = [            
+            o.vertices[start_index],
+            o.vertices[start_index + 1],
+            o.vertices[start_index + 2],
+            ]
+        
         v_transformed = mult_vec3_m4(v, combined)
 
-        if v_transformed[2] > 0:
+        #test
+        if v_transformed[2] > 0: 
             print("Point behind camera")
             continue
 
@@ -151,6 +180,6 @@ for t in range(0, frames):
             print("Raster point invalid", raster_point)
             continue
 
-        set_raster_coordinate(raster_point[0], raster_point[1], 200, 200, 0)
+        set_raster_coordinate(raster_point[0], raster_point[1], 255, 0, 0)
 
     save_ppm(width, height, buffer, t)
