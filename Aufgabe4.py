@@ -2,8 +2,6 @@ import math
 import os 
 from utils.objLoader import objLoader
 
-
-
 def save_ppm(width, height, buffer, time): 
     # Create a path and file and open it for writing    
     output_path = os.path.join(os.path.dirname(__file__), "output")    
@@ -126,7 +124,12 @@ cube = [
 translation = [1, 0, 0, 0,
                0, 1, 0, 0,
                0, 0, 1, 0,
-               0, 0, -0.3, 1]
+               0, 0, -0.7, 1]
+
+translation_2 = [1, 0, 0, 0,
+               0, 1, 0, 0,
+               0, 0, 1, 0,
+               -0.8, 0, -0.3, 1]
 
 frames = 50
 
@@ -137,7 +140,7 @@ o = objLoader("./geo/humanHead.obj")
 for t in range(0, frames):
     print ("Frame ", t)
     buffer = [10] * buffer_length * 3
-
+#zeitabhängige transformation
     #angle = (360 / frames) * t
     # normalize frame number    
     normalized_t = t / frames 
@@ -152,6 +155,7 @@ for t in range(0, frames):
     radians = math.radians(angle)
     rotation = m3_to_m4(rot_y(angle))
 
+    #first matrix
     combined = m4_x_m4(rotation, translation)
 
     for index, val in enumerate(o.vertices[::3]):
@@ -181,5 +185,35 @@ for t in range(0, frames):
             continue
 
         set_raster_coordinate(raster_point[0], raster_point[1], 255, 0, 0)
+
+    #2nd matrix
+    combined = m4_x_m4(rotation, translation_2)
+    for index, val in enumerate(o.vertices[::3]):
+        start_index = index * 3
+        v = [            
+            o.vertices[start_index],
+            o.vertices[start_index + 1],
+            o.vertices[start_index + 2],
+            ]
+        
+        v_transformed = mult_vec3_m4(v, combined)
+
+        #test
+        if v_transformed[2] > 0: 
+            print("Point behind camera")
+            continue
+
+        screen_space_point = perspective_divide(v_transformed, -1)
+        raster_point = view_to_raster(screen_space_point, width, height)
+
+        if not 0 <= raster_point[0] <= width - 1:
+            print("Raster point invalid", raster_point)
+            continue
+
+        if not 0 <= raster_point[1] <= height - 1:
+            print("Raster point invalid", raster_point)
+            continue
+
+        set_raster_coordinate(raster_point[0], raster_point[1], 50, 50, 255)
 
     save_ppm(width, height, buffer, t)
